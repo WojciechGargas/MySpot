@@ -35,6 +35,7 @@ public class ReservationsController : ControllerBase
             return BadRequest();
         }
         
+        reservation.Date = DateTime.UtcNow.AddDays(1).Date;
         var reservationAlreadyExists = _reservations.Any(x => 
             x.ParkingSpotName == reservation.ParkingSpotName
             && x.Date.Date == reservation.Date.Date );
@@ -44,7 +45,6 @@ public class ReservationsController : ControllerBase
             return BadRequest();
         }
         reservation.Id = _id;
-        reservation.Date = DateTime.UtcNow.AddDays(1).Date;
         _id++;
         _reservations.Add(reservation);
 
