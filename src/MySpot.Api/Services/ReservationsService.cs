@@ -5,18 +5,18 @@ namespace MySpot.Api.Services;
 public class ReservationsService
 {
     private static int _id = 1;
-    private static readonly List<Reservation> _reservations = new();
+    private static readonly List<Reservation> Reservations = new();
 
-    private static readonly List<string> _parkingSpotNames = new()
+    private static readonly List<string> ParkingSpotNames = new()
     {
         "P1", "P2", "P3", "P4", "P5"
     };
 
     public Reservation Get(int id) 
-        => _reservations.SingleOrDefault(x => x.Id == id);
+        => Reservations.SingleOrDefault(x => x.Id == id);
     
     public IEnumerable<Reservation> GetAll()
-        => _reservations;
+        => Reservations;
 
     public int? Create(Reservation reservation)
     {
@@ -29,12 +29,12 @@ public class ReservationsService
             return null;
         }
         
-        if (_parkingSpotNames.All(x => x != reservation.ParkingSpotName))
+        if (ParkingSpotNames.All(x => x != reservation.ParkingSpotName))
         {
             return null;
         }
         
-        var reservationAlreadyExists = _reservations.Any(x => 
+        var reservationAlreadyExists = Reservations.Any(x => 
             x.ParkingSpotName == reservation.ParkingSpotName
             && x.Date.Date == reservation.Date.Date );
 
@@ -45,17 +45,19 @@ public class ReservationsService
         
         reservation.Id = _id;
         _id++;
-        _reservations.Add(reservation);
+        Reservations.Add(reservation);
 
         return reservation.Id;
     }
 
-    public bool Update( Reservation reservation)
+    public bool Update(Reservation reservation)
     {
-        var exisitngReservation = _reservations.SingleOrDefault(x => x.Id == reservation.Id);
+        var exisitngReservation = Reservations.SingleOrDefault(x => x.Id == reservation.Id);
         if (exisitngReservation == null)
             return false;
 
+        if (exisitngReservation.Date <= reservation.Date)
+            return false;
 
         exisitngReservation.LicensePlate = reservation.LicensePlate;
         return true;
@@ -63,11 +65,11 @@ public class ReservationsService
 
     public bool Delete(int id)
     {
-        var exisitngReservation = _reservations.SingleOrDefault(x => x.Id == id);
+        var exisitngReservation = Reservations.SingleOrDefault(x => x.Id == id);
         if (exisitngReservation == null)
             return false;
 
-        _reservations.Remove(exisitngReservation);
+        Reservations.Remove(exisitngReservation);
         return true;
     }
 }
