@@ -7,12 +7,15 @@ namespace MySpot.Tests.Unit.Entities;
 
 public class WeeklyParkingSpotTests
 {
-    [Fact]
-    public void AddReservation_WithWrongDate_ThrowsException()
+    [Theory]
+    [InlineData("2026-01-01")]
+    [InlineData("2026-05-05")]
+    [InlineData("2026-12-12")]
+    public void AddReservation_WithWrongDate_ThrowsException(string dateString)
     {
         //ARRANGE
         var now = DateTime.UtcNow;
-        var invalidDate = now.AddDays(10);
+        var invalidDate = DateTime.Parse(dateString);
 
         var weeklyParkingSpot = new WeeklyParkingSpot(Guid.NewGuid(), new Week(now), "P1");    
         
