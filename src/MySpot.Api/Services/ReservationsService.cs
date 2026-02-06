@@ -6,13 +6,14 @@ namespace MySpot.Api.Services;
 
 public class ReservationsService
 {
+    private static Clock Clock = new ();
     private static readonly List<WeeklyParkingSpot> WeeklyParkingSpots = new()
     {
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000001"), DateTime.UtcNow, DateTime.UtcNow.AddDays(7), name:"P1" ),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000002"), DateTime.UtcNow, DateTime.UtcNow.AddDays(7), name:"P2" ),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000003"), DateTime.UtcNow, DateTime.UtcNow.AddDays(7), name:"P3" ),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), DateTime.UtcNow, DateTime.UtcNow.AddDays(7), name:"P4" ),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), DateTime.UtcNow, DateTime.UtcNow.AddDays(7), name:"P5" ),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000001"), Clock.Current(), Clock.Current().AddDays(7), name:"P1" ),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000002"), Clock.Current(), Clock.Current().AddDays(7), name:"P2" ),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000003"), Clock.Current(), Clock.Current().AddDays(7), name:"P3" ),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), Clock.Current(), Clock.Current().AddDays(7), name:"P4" ),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), Clock.Current(), Clock.Current().AddDays(7), name:"P5" ),
     };
 
     public ReservationDto Get(Guid id)
@@ -36,7 +37,7 @@ public class ReservationsService
         
         var reservation = new Reservation(command.ReservationId, command.ParkingSpotId, command.EmployeeName,
         command.LicensePlate, command.Date);
-        weeklyParkingSpot.AddReservation(reservation);
+        weeklyParkingSpot.AddReservation(reservation, Clock.Current());
 
         return reservation.Id;
     }
@@ -51,7 +52,7 @@ public class ReservationsService
         if (exisitngReservation is null)
             return false;
 
-        if (exisitngReservation.Date < DateTime.UtcNow)
+        if (exisitngReservation.Date < Clock.Current())
             return false;
 
         exisitngReservation.ChangeLicensePlate(command.LicensePlate);
