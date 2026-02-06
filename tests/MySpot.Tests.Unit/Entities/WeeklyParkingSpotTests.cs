@@ -23,8 +23,8 @@ public class WeeklyParkingSpotTests
         
         //ASSERT
         //using shouldly nuget package
-        exception.ShouldBeNull();
-        exception.ShouldBeOfType<InvalidLicensePlateException>();
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<InvalidReservationDateException>();
     }
     
     [Fact]
