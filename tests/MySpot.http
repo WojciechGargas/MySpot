@@ -1,9 +1,18 @@
 ﻿@url = http://localhost:5223/reservations
-@reservationId = 33e12c52-be89-4cad-8f5b-79c20d839980
 @parkingSpotId = 00000000-0000-0000-0000-000000000001
 
 ###
 GET {{url}}
+
+###
+GET {{url}}/
+
+> {%
+    client.global.set(
+        "reservationId",
+        response.body[0].id
+    );
+%}
 
 ###
 GET {{url}}/{{reservationId}}
