@@ -21,10 +21,6 @@ public class WeeklyParkingSpot
 
     public void AddReservation(Reservation reservation, Date now)
     {
-        var a = reservation.Date < Week.From;
-        var b = reservation.Date > Week.To;
-        var c = reservation.Date < now;
-        
         var isInvalidDate = reservation.Date < Week.From || 
                             reservation.Date > Week.To ||
                             reservation.Date < now;

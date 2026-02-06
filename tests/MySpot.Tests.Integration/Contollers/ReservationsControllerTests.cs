@@ -31,4 +31,21 @@ public class ReservationsControllerTests
         
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
+    
+    [Fact]
+    public async Task Post_ReservationOnUnexistingSpot_ShouldReturnBadRequest()
+    {
+        var command = new CreateReservation(
+            ParkingSpotId: Guid.Parse("00000000-0000-0000-0000-000000000009"),
+            ReservationId: Guid.NewGuid(),
+            Date: DateTime.UtcNow.AddDays(1),
+            EmployeeName: "John Doe",
+            LicensePlate: "XYZ123"
+        );
+        
+        var response = await _client.PostAsJsonAsync(
+            "/reservations", command);
+        
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
