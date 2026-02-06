@@ -1,0 +1,34 @@
+﻿using System.Net;
+using System.Net.Http.Json;
+using MySpot.Api.Commands;
+using MySpot.Tests.Integration.Factories;
+
+namespace MySpot.Tests.Integration.Contollers;
+
+public class ReservationsControllerTests 
+    : IClassFixture<MySpotApplicationFactory>
+{
+    private readonly HttpClient _client;
+
+    public ReservationsControllerTests(MySpotApplicationFactory factory)
+    {
+        _client = factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task Post_ValidReservation_ShouldReturnCreated()
+    {
+        var command = new CreateReservation(
+            ParkingSpotId: Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            ReservationId: Guid.NewGuid(),
+            Date: DateTime.UtcNow.AddDays(1),
+            EmployeeName: "John Doe",
+            LicensePlate: "XYZ123"
+        );
+        
+        var response = await _client.PostAsJsonAsync(
+            "/reservations", command);
+        
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+}
