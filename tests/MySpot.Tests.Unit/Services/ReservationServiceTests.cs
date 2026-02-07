@@ -2,6 +2,7 @@ using MySpot.Api.Commands;
 using MySpot.Api.Entities;
 using MySpot.Api.Services;
 using MySpot.Api.ValueObjects;
+using MySpot.Tests.Shared;
 using Shouldly;
 
 namespace MySpot.Tests.Unit.Services;
@@ -26,8 +27,8 @@ public class ReservationServiceTests
 
     #region Arrange
 
-    private static readonly DateTime FixedNow = new(2025, 2, 5, 12, 0, 0, DateTimeKind.Utc);
-    private readonly IClock _clock = new TestClock(FixedNow);
+    private static readonly DateTime FixedNow = TestClock.FixedNow;
+    private readonly IClock _clock = new TestClock();
     private readonly ReservationsService _reservationService;
     private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
 
@@ -46,16 +47,4 @@ public class ReservationServiceTests
     }
 
     #endregion
-
-    private sealed class TestClock : IClock
-    {
-        private readonly DateTime _current;
-
-        public TestClock(DateTime current)
-        {
-            _current = DateTime.SpecifyKind(current, DateTimeKind.Utc);
-        }
-
-        public DateTime Current() => _current;
-    }
 }
