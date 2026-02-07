@@ -1,5 +1,4 @@
-﻿using System.Data;
-using MySpot.Api.Entities;
+﻿using MySpot.Api.Entities;
 using MySpot.Api.Exceptions;
 using MySpot.Api.ValueObjects;
 using Shouldly;
@@ -22,7 +21,7 @@ public class WeeklyParkingSpotTests
         var exception = Record.Exception(() => _weeklyParkingSpot.AddReservation(reservation, _now));
         
         // Assert
-        //using shouldly nuget package
+        // using shouldly nuget package
         exception.ShouldNotBeNull();
         exception.ShouldBeOfType<InvalidReservationDateException>();
     }
