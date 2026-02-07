@@ -23,7 +23,7 @@ builder.Services
                 name: "P5"),
         };
     })
-    .AddSingleton<ReservationsService>()
+    .AddSingleton<IReservationsService, ReservationsService>()
     .AddControllers();
 
 var app = builder.Build();

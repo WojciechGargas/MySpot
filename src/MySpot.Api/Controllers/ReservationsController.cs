@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MySpot.Api.Commands;
 using MySpot.Api.DTO;
 using MySpot.Api.Entities;
@@ -11,8 +11,8 @@ namespace MySpot.Api.Controllers;
 [Route("reservations")]
 public class ReservationsController : ControllerBase
 {
-    private readonly ReservationsService _reservationsService;
-    public ReservationsController(ReservationsService reservationsService)
+    private readonly IReservationsService _reservationsService;
+    public ReservationsController(IReservationsService reservationsService)
     {
         _reservationsService  = reservationsService;
     }
