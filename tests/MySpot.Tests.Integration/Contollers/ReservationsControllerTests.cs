@@ -21,7 +21,7 @@ public class ReservationsControllerTests
         var command = new CreateReservation(
             ParkingSpotId: Guid.Parse("00000000-0000-0000-0000-000000000001"),
             ReservationId: Guid.NewGuid(),
-            Date: DateTime.UtcNow.AddDays(1),
+            Date: MySpotApplicationFactory.FixedNow.AddDays(1),
             EmployeeName: "John Doe",
             LicensePlate: "XYZ123"
         );
@@ -38,7 +38,7 @@ public class ReservationsControllerTests
         var command = new CreateReservation(
             ParkingSpotId: Guid.Parse("00000000-0000-0000-0000-000000000009"),
             ReservationId: Guid.NewGuid(),
-            Date: DateTime.UtcNow.AddDays(1),
+            Date: MySpotApplicationFactory.FixedNow.AddDays(1),
             EmployeeName: "John Doe",
             LicensePlate: "XYZ123"
         );

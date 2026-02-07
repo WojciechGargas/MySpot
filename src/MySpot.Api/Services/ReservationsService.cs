@@ -8,10 +8,10 @@ namespace MySpot.Api.Services;
 
 public class ReservationsService
 {
-    private readonly Clock _clock;
+    private readonly IClock _clock;
     private readonly IEnumerable<WeeklyParkingSpot> _weeklyParkingSpots;
 
-    public ReservationsService(Clock clock, IEnumerable<WeeklyParkingSpot> weeklyParkingSpots)
+    public ReservationsService(IClock clock, IEnumerable<WeeklyParkingSpot> weeklyParkingSpots)
     {
         _clock = clock;
         _weeklyParkingSpots = weeklyParkingSpots;
