@@ -1,4 +1,3 @@
-﻿using System.Windows.Input;
 using MySpot.Api.Commands;
 using MySpot.Api.Entities;
 using MySpot.Api.Services;
@@ -15,8 +14,8 @@ public class ReservationServiceTests
         // Arrange
         var weeklyparkingSpot = _weeklyParkingSpots.First();
         var command = new CreateReservation(weeklyparkingSpot.Id,
-            Guid.NewGuid(), DateTime.UtcNow.AddMinutes(5), "John Doe", "XYZ123");
-        
+            Guid.NewGuid(), _clock.Current().AddMinutes(5), "John Doe", "XYZ123");
+
         // Act
         var reservationId = _reservationService.Create(command);
 
@@ -24,10 +23,11 @@ public class ReservationServiceTests
         reservationId.ShouldNotBeNull();
         reservationId.ShouldBe(command.ReservationId);
     }
-    
+
     #region Arrange
-    
-    private readonly Clock _clock = new();
+
+    private static readonly DateTime FixedNow = new(2025, 2, 5, 12, 0, 0, DateTimeKind.Utc);
+    private readonly IClock _clock = new TestClock(FixedNow);
     private readonly ReservationsService _reservationService;
     private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
 
@@ -41,9 +41,21 @@ public class ReservationServiceTests
             new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(_clock.Current()), name:"P4" ),
             new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(_clock.Current()), name:"P5" ),
         };
-        
+
         _reservationService = new ReservationsService(_clock, _weeklyParkingSpots);
     }
-    
+
     #endregion
+
+    private sealed class TestClock : IClock
+    {
+        private readonly DateTime _current;
+
+        public TestClock(DateTime current)
+        {
+            _current = DateTime.SpecifyKind(current, DateTimeKind.Utc);
+        }
+
+        public DateTime Current() => _current;
+    }
 }
