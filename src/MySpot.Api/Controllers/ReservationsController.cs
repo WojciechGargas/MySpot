@@ -11,24 +11,19 @@ namespace MySpot.Api.Controllers;
 [Route("reservations")]
 public class ReservationsController : ControllerBase
 {
-    private static Clock Clock = new ();
-    private static readonly ReservationsService _service = new(new List<WeeklyParkingSpot>()
-        {
-            new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(Clock.Current()), name:"P1" ),
-            new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(Clock.Current()), name:"P2" ),
-            new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(Clock.Current()), name:"P3" ),
-            new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(Clock.Current()), name:"P4" ),
-            new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(Clock.Current()), name:"P5" ),
-        }
-    );
+    private readonly ReservationsService _reservationsService;
+    public ReservationsController(ReservationsService reservationsService)
+    {
+        _reservationsService  = reservationsService;
+    }
     
     [HttpGet]
-    public ActionResult<IEnumerable<ReservationDto>> Get() => Ok(_service.GetAllWeekly());
+    public ActionResult<IEnumerable<ReservationDto>> Get() => Ok(_reservationsService.GetAllWeekly());
 
     [HttpGet("{id:Guid}")]
     public ActionResult<ReservationDto> Get(Guid id)
     {
-        var reservationDto = _service.Get(id);
+        var reservationDto = _reservationsService.Get(id);
         if (reservationDto == null)
             return NotFound();
         
@@ -38,7 +33,7 @@ public class ReservationsController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] CreateReservation command)
     {
-        var id = _service.Create((command with {ReservationId =  Guid.NewGuid()}));
+        var id = _reservationsService.Create((command with {ReservationId =  Guid.NewGuid()}));
         if (id == null)
             return BadRequest();
         
@@ -48,7 +43,7 @@ public class ReservationsController : ControllerBase
     [HttpPut("{id:Guid}")]
     public ActionResult Put(Guid id, [FromBody] ChangeReservationLicensePlate command)
     {
-        if(_service.Update(command with {ReservationId = id}))
+        if(_reservationsService.Update(command with {ReservationId = id}))
             return NoContent();
         
         return NotFound();
@@ -57,7 +52,7 @@ public class ReservationsController : ControllerBase
     [HttpDelete("{id:Guid}")]
     public ActionResult Delete(Guid id)
     {
-        if(_service.Delete(new DeleteReservation(id)))
+        if(_reservationsService.Delete(new DeleteReservation(id)))
             return NoContent();
         
         return NotFound();

@@ -42,7 +42,7 @@ public class ReservationServiceTests
             new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(_clock.Current()), name:"P5" ),
         };
         
-        _reservationService = new ReservationsService(_weeklyParkingSpots);
+        _reservationService = new ReservationsService(_clock, _weeklyParkingSpots);
     }
     
     #endregion
