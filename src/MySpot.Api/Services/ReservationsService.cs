@@ -1,6 +1,7 @@
 ﻿using MySpot.Api.Commands;
 using MySpot.Api.DTO;
 using MySpot.Api.Entities;
+using MySpot.Api.Exceptions;
 using MySpot.Api.ValueObjects;
 
 namespace MySpot.Api.Services;
@@ -72,7 +73,7 @@ public class ReservationsService
         var reservationId = new ReservationId(command.ReservationId);
         var exisitngReservation = weeklyParkingSpot.Reservations.SingleOrDefault(x => x.Id == reservationId);
         if (exisitngReservation is null)
-            return false;
+            throw new ReservationDoesNotExistException();
         
         weeklyParkingSpot.RemoveReservation(reservationId);
         
