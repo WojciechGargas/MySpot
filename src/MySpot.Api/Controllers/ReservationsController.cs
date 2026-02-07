@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MySpot.Api.Commands;
 using MySpot.Api.DTO;
 using MySpot.Api.Entities;
+using MySpot.Api.Exceptions;
 using MySpot.Api.Services;
 using MySpot.Api.ValueObjects;
 
@@ -16,7 +17,7 @@ public class ReservationsController : ControllerBase
     {
         _reservationsService  = reservationsService;
     }
-    
+
     [HttpGet]
     public ActionResult<IEnumerable<ReservationDto>> Get() => Ok(_reservationsService.GetAllWeekly());
 
@@ -26,18 +27,25 @@ public class ReservationsController : ControllerBase
         var reservationDto = _reservationsService.Get(id);
         if (reservationDto == null)
             return NotFound();
-        
+
         return Ok(reservationDto);
     }
 
     [HttpPost]
     public ActionResult Post([FromBody] CreateReservation command)
     {
-        var id = _reservationsService.Create((command with {ReservationId =  Guid.NewGuid()}));
-        if (id == null)
+        try
+        {
+            var id = _reservationsService.Create((command with {ReservationId =  Guid.NewGuid()}));
+            if (id == null)
+                return BadRequest();
+
+            return CreatedAtAction(nameof(Get), new { id }, null);
+        }
+        catch (InvalidReservationDateException)
+        {
             return BadRequest();
-        
-        return CreatedAtAction(nameof(Get), new { id }, null);
+        }
     }
 
     [HttpPut("{id:Guid}")]
@@ -45,7 +53,7 @@ public class ReservationsController : ControllerBase
     {
         if(_reservationsService.Update(command with {ReservationId = id}))
             return NoContent();
-        
+
         return NotFound();
     }
 
@@ -54,7 +62,7 @@ public class ReservationsController : ControllerBase
     {
         if(_reservationsService.Delete(new DeleteReservation(id)))
             return NoContent();
-        
+
         return NotFound();
     }
 }
