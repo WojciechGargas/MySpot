@@ -36,7 +36,7 @@ public class ReservationsControllerTests
     public async Task Post_ReservationOnUnexistingSpot_ShouldReturnBadRequest()
     {
         var command = new CreateReservation(
-            ParkingSpotId: Guid.Parse("00000000-0000-0000-0000-000000000009"),
+            ParkingSpotId: Guid.NewGuid(),
             ReservationId: Guid.NewGuid(),
             Date: MySpotApplicationFactory.FixedNow.AddDays(1),
             EmployeeName: "John Doe",
