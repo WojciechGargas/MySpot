@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MySpot.Api.Services;
-using MySpot.Tests.Shared;
+using MySpot.Api;
+using MySpot.Application.Services;
 
 namespace MySpot.Tests.Integration.Factories;
 

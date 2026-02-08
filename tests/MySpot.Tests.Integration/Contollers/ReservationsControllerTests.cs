@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using MySpot.Api.Commands;
+using MySpot.Application.Commands;
 using MySpot.Tests.Integration.Factories;
 
 namespace MySpot.Tests.Integration.Contollers;

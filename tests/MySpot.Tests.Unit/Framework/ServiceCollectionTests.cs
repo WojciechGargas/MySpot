@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.DependencyInjection;
-using MySpot.Api.Services;
 using Shouldly;
 
 namespace MySpot.Tests.Unit.Framework;

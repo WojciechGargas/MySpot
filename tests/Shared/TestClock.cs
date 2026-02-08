@@ -1,6 +1,6 @@
-using MySpot.Api.Services;
+using MySpot.Application.Services;
 
-namespace MySpot.Tests.Shared;
+namespace MySpot.Tests.Integration;
 
 public sealed class TestClock : IClock
 {
