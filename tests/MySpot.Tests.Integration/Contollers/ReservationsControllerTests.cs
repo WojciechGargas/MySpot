@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
 using MySpot.Application.Commands;
 using MySpot.Tests.Integration.Factories;
 

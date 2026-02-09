@@ -7,11 +7,15 @@ public class WeeklyParkingSpot
 {
     private readonly HashSet<Reservation> _reservations = new();
     
-    public ParkingSpotId Id { get; }
-    public Week Week { get; }
-    public string Name { get; }
+    public ParkingSpotId Id { get; private set;  }
+    public Week Week { get; private set;  }
+    public string Name { get; private set;  }
     public IEnumerable<Reservation> Reservations => _reservations;
     
+    private WeeklyParkingSpot()
+    {
+    }
+
     public WeeklyParkingSpot(Guid id, Week week, string name)
     {
         Id = id;
