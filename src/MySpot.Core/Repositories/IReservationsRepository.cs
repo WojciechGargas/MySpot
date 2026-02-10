@@ -5,11 +5,11 @@ namespace MySpot.Core.Repositories;
 
 public interface IReservationsRepository
 {
-    Reservation Get(ReservationId id);
-    IEnumerable<Reservation> GetAll();
-    IEnumerable<Reservation> GetByParkingSpot(ParkingSpotId parkingSpotId);
-    IEnumerable<Reservation> GetByWeek(Week week);
-    void Add(Reservation reservation);
-    void Update(Reservation reservation);
-    void Delete(Reservation reservation);
+    Task<Reservation> GetAsync(ReservationId id);
+    Task<IEnumerable<Reservation>> GetAllAsync();
+    Task<IEnumerable<Reservation>> GetByParkingSpotAsync(ParkingSpotId parkingSpotId);
+    Task<IEnumerable<Reservation>> GetByWeekAsync(Week week);
+    Task AddAsync(Reservation reservation);
+    Task UpdateAsync(Reservation reservation);
+    Task DeleteAsync(Reservation reservation);
 }

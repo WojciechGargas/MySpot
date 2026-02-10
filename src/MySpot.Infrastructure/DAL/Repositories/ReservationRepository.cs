@@ -14,37 +14,38 @@ internal sealed class ReservationRepository : IReservationsRepository
         _dbContext = dbContext;
     }
 
-    public Reservation Get(ReservationId id)
-        => _dbContext.Reservations.SingleOrDefault(x => x.Id == id);
+    public async Task<Reservation?> GetAsync(ReservationId id)
+        => await _dbContext.Reservations
+            .SingleOrDefaultAsync(x => x.Id == id);
 
-    public IEnumerable<Reservation> GetAll()
-        => _dbContext.Reservations.ToList();
+    public async Task<IEnumerable<Reservation>> GetAllAsync()
+        => await _dbContext.Reservations.ToListAsync();
 
-    public IEnumerable<Reservation> GetByParkingSpot(ParkingSpotId parkingSpotId)
-        => _dbContext.Reservations
+    public async Task<IEnumerable<Reservation>> GetByParkingSpotAsync(ParkingSpotId parkingSpotId)
+        => await _dbContext.Reservations
             .Where(x => x.ParkingSpotId == parkingSpotId)
-            .ToList();
+            .ToListAsync();
 
-    public IEnumerable<Reservation> GetByWeek(Week week)
-        => _dbContext.Reservations
+    public async Task<IEnumerable<Reservation>> GetByWeekAsync(Week week)
+        => await _dbContext.Reservations
             .Where(x => x.Date >= week.From && x.Date <= week.To)
-            .ToList();
+            .ToListAsync();
 
-    public void Add(Reservation reservation)
+    public async Task AddAsync(Reservation reservation)
     {
-        _dbContext.Reservations.Add(reservation);
-        _dbContext.SaveChanges();
+        await _dbContext.Reservations.AddAsync(reservation);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Update(Reservation reservation)
+    public async Task UpdateAsync(Reservation reservation)
     {
         _dbContext.Reservations.Update(reservation);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(Reservation reservation)
+    public async Task DeleteAsync(Reservation reservation)
     {
         _dbContext.Reservations.Remove(reservation);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 }

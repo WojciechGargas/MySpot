@@ -11,15 +11,21 @@ namespace MySpot.Tests.Unit.Services;
 public class ReservationServiceTests
 {
     [Fact]
-    public void Create_WithCorrectDate_ShouldSucceed()
+    public async Task Create_WithCorrectDate_ShouldSucceed()
     {
         // Arrange
-        var weeklyparkingSpot = _weeklyParkingSpotRepository.GetAll().First();
-        var command = new CreateReservation(weeklyparkingSpot.Id,
-            Guid.NewGuid(), _clock.Current().AddMinutes(5), "John Doe", "XYZ123");
+        var weeklyParkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First();
+
+        var command = new CreateReservation(
+            weeklyParkingSpot.Id,
+            Guid.NewGuid(),
+            _clock.Current().AddMinutes(5),
+            "John Doe",
+            "XYZ123"
+        );
 
         // Act
-        var reservationId = _reservationService.Create(command);
+        var reservationId = await _reservationService.CreateAsync(command);
 
         // Assert
         reservationId.ShouldNotBeNull();
@@ -45,26 +51,30 @@ public class ReservationServiceTests
     {
         private readonly List<Reservation> _reservations = new();
 
-        public Reservation Get(ReservationId id)
-            => _reservations.SingleOrDefault(x => x.Id == id);
+        public Task<Reservation> GetAsync(ReservationId id)
+            => Task.FromResult(_reservations.SingleOrDefault(x => x.Id == id));
 
-        public IEnumerable<Reservation> GetAll()
-            => _reservations;
+        public Task<IEnumerable<Reservation>> GetAllAsync()
+            => Task.FromResult(_reservations.AsEnumerable());
 
-        public IEnumerable<Reservation> GetByParkingSpot(ParkingSpotId parkingSpotId)
-            => _reservations.Where(x => x.ParkingSpotId == parkingSpotId);
+        public Task<IEnumerable<Reservation>> GetByParkingSpotAsync(ParkingSpotId parkingSpotId)
+            => Task.FromResult(_reservations.Where(x => x.ParkingSpotId == parkingSpotId));
 
-        public IEnumerable<Reservation> GetByWeek(Week week)
-            => _reservations.Where(x => x.Date >= week.From && x.Date <= week.To);
+        public Task<IEnumerable<Reservation>> GetByWeekAsync(Week week)
+            => Task.FromResult(_reservations.Where(x => x.Date >= week.From && x.Date <= week.To));
 
-        public void Add(Reservation reservation)
-            => _reservations.Add(reservation);
-
-        public void Update(Reservation reservation)
+        public Task AddAsync(Reservation reservation)
         {
+            _reservations.Add(reservation);
+            return Task.CompletedTask;
         }
 
-        public void Delete(Reservation reservation)
-            => _reservations.Remove(reservation);
+        public Task UpdateAsync(Reservation reservation) => Task.CompletedTask;
+
+        public Task DeleteAsync(Reservation reservation)
+        {
+            _reservations.Remove(reservation);
+            return Task.CompletedTask;
+        }
     }
 }
