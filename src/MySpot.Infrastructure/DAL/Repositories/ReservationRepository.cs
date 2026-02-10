@@ -5,7 +5,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Infrastructure.DAL.Repositories;
 
-public class ReservationRepository : IReservationsRepository
+internal sealed class ReservationRepository : IReservationsRepository
 {
     private readonly MySpotDbContext _dbContext;
 

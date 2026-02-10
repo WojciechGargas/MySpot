@@ -14,11 +14,13 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.12" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.12" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     </ItemGroup>
     
     <ItemGroup>
         <InternalsVisibleTo Include="MySpot.Tests.Unit" />
+        <InternalsVisibleTo Include="MySpot.Tests.Integration" />
     </ItemGroup>
 
 </Project>

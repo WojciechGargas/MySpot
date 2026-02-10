@@ -5,7 +5,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Infrastructure.DAL.Repositories;
 
-public class PostgresWeeklyParkingSpotRepository : IWeeklyParkingSpotRepository
+internal sealed class PostgresWeeklyParkingSpotRepository : IWeeklyParkingSpotRepository
 {
     private readonly MySpotDbContext _dbContext;
 
