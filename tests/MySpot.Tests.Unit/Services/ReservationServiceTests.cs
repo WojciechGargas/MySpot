@@ -51,7 +51,7 @@ public class ReservationServiceTests
     {
         private readonly List<Reservation> _reservations = new();
 
-        public Task<Reservation> GetAsync(ReservationId id)
+        public Task<Reservation?> GetAsync(ReservationId id)
             => Task.FromResult(_reservations.SingleOrDefault(x => x.Id == id));
 
         public Task<IEnumerable<Reservation>> GetAllAsync()

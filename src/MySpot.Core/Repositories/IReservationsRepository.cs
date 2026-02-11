@@ -5,7 +5,7 @@ namespace MySpot.Core.Repositories;
 
 public interface IReservationsRepository
 {
-    Task<Reservation> GetAsync(ReservationId id);
+    Task<Reservation?> GetAsync(ReservationId id);
     Task<IEnumerable<Reservation>> GetAllAsync();
     Task<IEnumerable<Reservation>> GetByParkingSpotAsync(ParkingSpotId parkingSpotId);
     Task<IEnumerable<Reservation>> GetByWeekAsync(Week week);

@@ -22,7 +22,7 @@ public class ReservationsService : IReservationsService
         _reservationsRepository = reservationsRepository;
     }
 
-    public async Task<ReservationDto> GetAsync(Guid id)
+    public async Task<ReservationDto?> GetAsync(Guid id)
     {
         var reservations = await GetAllWeeklyAsync();
         return reservations.SingleOrDefault(x => x.Id == id);
@@ -88,7 +88,7 @@ public class ReservationsService : IReservationsService
         return true;
     }
 
-    private async Task<WeeklyParkingSpot> GetWeeklyParkingSpotByReservationAsync(ReservationId reservationId)
+    private async Task<WeeklyParkingSpot?> GetWeeklyParkingSpotByReservationAsync(ReservationId reservationId)
     {
         var weeklyParkingSpots = await _weeklyParkingSpotsRepository.GetAllAsync();
         

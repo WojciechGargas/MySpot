@@ -14,7 +14,7 @@ internal sealed class PostgresWeeklyParkingSpotRepository : IWeeklyParkingSpotRe
         _dbContext = dbContext;
     }
     
-    public Task<WeeklyParkingSpot> GetAsync(ParkingSpotId id) 
+    public Task<WeeklyParkingSpot?> GetAsync(ParkingSpotId id) 
         => _dbContext.WeeklyParkingSpots
             .Include(x => x.Reservations)
             .SingleOrDefaultAsync(x => x.Id == id);
