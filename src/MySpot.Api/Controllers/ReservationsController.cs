@@ -36,18 +36,11 @@ public class ReservationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] CreateReservation command)
     {
-        try
-        {
-            var id = await _reservationsService.CreateAsync((command with {ReservationId =  Guid.NewGuid()}));
-            if (id == null)
-                return BadRequest();
-
-            return CreatedAtAction(nameof(Get), new { id }, null);
-        }
-        catch (InvalidReservationDateException)
-        {
+        var id = await _reservationsService.CreateAsync((command with {ReservationId =  Guid.NewGuid()}));
+        if (id == null)
             return BadRequest();
-        }
+
+        return CreatedAtAction(nameof(Get), new { id }, null);
     }
 
     [HttpPut("{id:Guid}")]

@@ -5,13 +5,14 @@ using MySpot.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddInfrastructure(builder.Configuration)
     .AddCore()
     .AddApplication()
+    .AddInfrastructure(builder.Configuration)
     .AddControllers();
 
 var app = builder.Build();
-app.MapControllers();
+
+app.UseInfrastructure();
 
 app.Run();
 
