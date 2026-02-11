@@ -24,7 +24,7 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     public async Task InitializeAsync()
     {
         _clock = _factory.Clock;
-        _clock.CurrentTime = new DateTime(2022, 8, 10);
+        _clock.CurrentTime = new DateTime(2022, 8, 10, 5, 0, 0, DateTimeKind.Utc);
         await _factory.InitializeAsync();
         _backend = _factory.CreateClient();
     }

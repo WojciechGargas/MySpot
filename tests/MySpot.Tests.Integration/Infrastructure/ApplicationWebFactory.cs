@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MySpot.Api;
-using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
 using MySpot.Core.Entities;
 using MySpot.Core.ValueObjects;
 using MySpot.Infrastructure.DAL;
@@ -91,3 +91,4 @@ public sealed class ApplicationWebFactory : WebApplicationFactory<Program>, IAsy
         await dbContext.SaveChangesAsync();
     }
 }
+

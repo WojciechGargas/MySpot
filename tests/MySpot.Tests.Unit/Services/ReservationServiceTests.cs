@@ -1,9 +1,13 @@
 using MySpot.Application.Commands;
 using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
+using MySpot.Core.DamainServices;
 using MySpot.Core.Entities;
+using MySpot.Core.Policies;
 using MySpot.Core.Repositories;
 using MySpot.Core.ValueObjects;
 using MySpot.Infrastructure.DAL.Repositories;
+using MySpot.Tests.Shared;
 using Shouldly;
 
 namespace MySpot.Tests.Unit.Services;
@@ -38,13 +42,21 @@ public class ReservationServiceTests
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;
     private readonly IReservationsRepository _reservationsRepository = new InMemoryReservationsRepository();
     private readonly IReservationsService _reservationService;
+    private readonly IParkingreservationService _parkingReservationService;
 
     public ReservationServiceTests()
     {
         _weeklyParkingSpotRepository = new InMemoryWeeklyParkingSpotRepository(_clock);
-        _reservationService = new ReservationsService(_clock, _weeklyParkingSpotRepository, _reservationsRepository);
+        var policies = new IReservationPolicy[]
+        {
+            new RegularEmployeeReservationPolicy(_clock),
+            new ManagerReservationPolicy(),
+            new BossReservationPolicy(),
+        };
+        _parkingReservationService = new ParkingreservationService(policies, _clock);
+        _reservationService = new ReservationsService(_clock, _weeklyParkingSpotRepository, _reservationsRepository,
+            _parkingReservationService);
     }
-
     #endregion
 
     private sealed class InMemoryReservationsRepository : IReservationsRepository
@@ -61,6 +73,11 @@ public class ReservationServiceTests
             => Task.FromResult(_reservations.Where(x => x.ParkingSpotId == parkingSpotId));
 
         public Task<IEnumerable<Reservation>> GetByWeekAsync(Week week)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Reservation>> GetReservationByWeekAsync(Week week)
             => Task.FromResult(_reservations.Where(x => x.Date >= week.From && x.Date <= week.To));
 
         public Task AddAsync(Reservation reservation)
@@ -75,6 +92,7 @@ public class ReservationServiceTests
         {
             _reservations.Remove(reservation);
             return Task.CompletedTask;
-        }
     }
+}
+
 }

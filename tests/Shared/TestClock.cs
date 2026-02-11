@@ -1,10 +1,10 @@
-using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
 
-namespace MySpot.Tests.Unit;
+namespace MySpot.Tests.Shared;
 
 public sealed class TestClock : IClock
 {
-    public static readonly DateTime FixedNow = new(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    public static readonly DateTime FixedNow = new(2026, 1, 1, 5, 0, 0, DateTimeKind.Utc);
 
     public DateTime Current() => FixedNow;
 }

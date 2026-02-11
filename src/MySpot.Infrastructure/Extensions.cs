@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
 using MySpot.Core.Repositories;
 using MySpot.Infrastructure.DAL;
 using MySpot.Infrastructure.DAL.Repositories;
