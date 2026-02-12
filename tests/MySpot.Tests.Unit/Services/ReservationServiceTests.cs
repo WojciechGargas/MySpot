@@ -20,7 +20,7 @@ public class ReservationServiceTests
         // Arrange
         var weeklyParkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First();
 
-        var command = new CreateReservation(
+        var command = new ReserveParkingSpotForVehicle(
             weeklyParkingSpot.Id,
             Guid.NewGuid(),
             _clock.Current().AddMinutes(5),
@@ -29,7 +29,7 @@ public class ReservationServiceTests
         );
 
         // Act
-        var reservationId = await _reservationService.CreateAsync(command);
+        var reservationId = await _reservationService.ReserveForVehicleAsync(command);
 
         // Assert
         reservationId.ShouldNotBeNull();
@@ -42,7 +42,7 @@ public class ReservationServiceTests
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;
     private readonly IReservationsRepository _reservationsRepository = new InMemoryReservationsRepository();
     private readonly IReservationsService _reservationService;
-    private readonly IParkingreservationService _parkingReservationService;
+    private readonly IParkingReservationService _parkingReservationService;
 
     public ReservationServiceTests()
     {
@@ -53,7 +53,7 @@ public class ReservationServiceTests
             new ManagerReservationPolicy(),
             new BossReservationPolicy(),
         };
-        _parkingReservationService = new ParkingreservationService(policies, _clock);
+        _parkingReservationService = new ParkingReservationService(policies, _clock);
         _reservationService = new ReservationsService(_clock, _weeklyParkingSpotRepository, _reservationsRepository,
             _parkingReservationService);
     }

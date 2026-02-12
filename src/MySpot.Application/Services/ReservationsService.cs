@@ -13,18 +13,18 @@ public class ReservationsService : IReservationsService
     private readonly IClock _clock;
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotsRepository;
     private readonly IReservationsRepository _reservationsRepository;
-    private readonly IParkingreservationService _parkingreservationService;
+    private readonly IParkingReservationService _parkingReservationService;
 
     public ReservationsService(
         IClock clock,
         IWeeklyParkingSpotRepository weeklyParkingSpotsRepository,
         IReservationsRepository reservationsRepository,
-        IParkingreservationService parkingReservationService)
+        IParkingReservationService parkingReservationService)
     {
         _clock = clock;
         _weeklyParkingSpotsRepository = weeklyParkingSpotsRepository;
         _reservationsRepository = reservationsRepository;
-        _parkingreservationService = parkingReservationService;
+        _parkingReservationService = parkingReservationService;
     }
 
     public async Task<ReservationDto?> GetAsync(Guid id)
@@ -42,12 +42,12 @@ public class ReservationsService : IReservationsService
                 {
                     Id = x.Id,
                     ParkingSpotId = x.ParkingSpotId,
-                    EmployeeName = x.EmployeeName,
+                    EmployeeName = x is VehicleReservation vr ? vr.EmployeeName : String.Empty,
                     Date = x.Date.Value.Date,
                 });
     }
 
-    public async Task<Guid?> CreateAsync(CreateReservation command)
+    public async Task<Guid?> ReserveForVehicleAsync(ReserveParkingSpotForVehicle command)
     {
         var parkingSpotId = new ParkingSpotId(command.ParkingSpotId);
         var week = new Week(_clock.Current());
@@ -57,10 +57,10 @@ public class ReservationsService : IReservationsService
         if(parkingSpotToReserve is null)
             return null;
         
-        var reservation = new Reservation(command.ReservationId, command.ParkingSpotId, command.EmployeeName,
+        var reservation = new VehicleReservation(command.ReservationId, command.ParkingSpotId, command.EmployeeName,
         command.LicensePlate, new Date(command.Date));
         
-        _parkingreservationService.ReserveSpotForVehicle(weeklyParkingSpots, JobTitle.Employee,
+        _parkingReservationService.ReserveSpotForVehicle(weeklyParkingSpots, JobTitle.Employee,
             parkingSpotToReserve, reservation);
         
         await _weeklyParkingSpotsRepository.UpdateAsync(parkingSpotToReserve);
@@ -68,14 +68,32 @@ public class ReservationsService : IReservationsService
         return reservation.Id;
     }
 
-    public async Task<bool> UpdateAsync(ChangeReservationLicensePlate command)
+    public async Task ReserveForCleaningAsync(ReserveParkingSpotForCleaning command)
+    {
+        var week = new Week(command.Date);
+        var weeklyParkingSpots = (await _weeklyParkingSpotsRepository.GetByWeekAsync(week)).ToList();
+        
+        _parkingReservationService.ReserveParkingForCleaning(weeklyParkingSpots, new Date(command.Date));
+
+        var task = weeklyParkingSpots.Select(x => _weeklyParkingSpotsRepository.UpdateAsync(x));
+        await Task.WhenAll(task);
+
+        // foreach (var parkingSpot in weeklyParkingSpots)
+        // {
+        //     await _weeklyParkingSpotsRepository.UpdateAsync(parkingSpot);
+        // }
+    }
+
+    public async Task<bool> ChangeReservationLicensePlateAsync(ChangeReservationLicensePlate command)
     {
         var weeklyParkingSpot = await GetWeeklyParkingSpotByReservationAsync(command.ReservationId);
         if (weeklyParkingSpot is null)
             return false;
 
         var parkingSpotId = new ReservationId(command.ReservationId);
-        var exisitngReservation = weeklyParkingSpot.Reservations.SingleOrDefault(x => x.Id == parkingSpotId);
+        var exisitngReservation = weeklyParkingSpot.Reservations
+            .OfType<VehicleReservation>()
+            .SingleOrDefault(x => x.Id == parkingSpotId);
         if (exisitngReservation is null)
             return false;
 

@@ -54,7 +54,7 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     [Fact]
-    public async Task Post_CreatesReservation_AndGetByIdReturnsOk()
+    public async Task PostVehicle_CreatesReservation_AndGetByIdReturnsOk()
     {
         var reservationId = await CreateReservationAsync(ParkingSpotId1, _clock.Current());
         try
@@ -73,22 +73,22 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     [Fact]
-    public async Task Post_ReturnsBadRequest_ForUnknownParkingSpot()
+    public async Task PostVehicle_ReturnsBadRequest_ForUnknownParkingSpot()
     {
-        var command = new CreateReservation(
+        var command = new ReserveParkingSpotForVehicle(
             Guid.NewGuid(),
             Guid.Empty,
             _clock.Current(),
             "Employee",
             "ABC123");
 
-        var response = await _backend.PostAsJsonAsync("reservations", command);
+        var response = await _backend.PostAsJsonAsync("reservations/vehicle", command);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
-    public async Task Put_ReturnsNoContent_ForExistingReservation()
+    public async Task PutVehicle_ReturnsNoContent_ForExistingReservation()
     {
         var reservationId = await CreateReservationAsync(ParkingSpotId2, _clock.Current());
         try
@@ -104,7 +104,7 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     [Fact]
-    public async Task Put_ReturnsNotFound_ForMissingReservation()
+    public async Task PutVehicle_ReturnsNotFound_ForMissingReservation()
     {
         var response = await UpdateLicensePlateAsync(Guid.NewGuid(), "XYZ987");
 
@@ -112,7 +112,7 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     [Fact]
-    public async Task Delete_ReturnsNoContent_ForExistingReservation()
+    public async Task DeleteVehicle_ReturnsNoContent_ForExistingReservation()
     {
         var reservationId = await CreateReservationAsync(ParkingSpotId3, _clock.Current());
 
@@ -122,7 +122,7 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     [Fact]
-    public async Task Delete_ReturnsNotFound_ForMissingReservation()
+    public async Task DeleteVehicle_ReturnsNotFound_ForMissingReservation()
     {
         var response = await DeleteReservationAsync(Guid.NewGuid());
 
@@ -131,14 +131,14 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
 
     private async Task<Guid> CreateReservationAsync(Guid parkingSpotId, DateTime date)
     {
-        var command = new CreateReservation(
+        var command = new ReserveParkingSpotForVehicle(
             parkingSpotId,
             Guid.Empty,
             date,
             "Employee",
             "ABC123");
 
-        var response = await _backend.PostAsJsonAsync("reservations", command);
+        var response = await _backend.PostAsJsonAsync("reservations/vehicle", command);
         if (response.StatusCode != HttpStatusCode.Created)
         {
             var body = await response.Content.ReadAsStringAsync();

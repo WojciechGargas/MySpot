@@ -11,11 +11,11 @@ public class WeeklyParkingSpotTests
     [InlineData("2025-01-01")]
     [InlineData("2026-05-05")]
     [InlineData("2026-12-12")]
-    public void AddReservation_WithWrongDate_ThrowsException(string dateString)
+    public void AddVehicleReservation_WithWrongDate_ThrowsException(string dateString)
     {
         // Arrange
         var invalidDate = DateTime.Parse(dateString);
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
                 "XYZ123", new Date(invalidDate));
         // Act
         var exception = Record.Exception(() => _weeklyParkingSpot.AddReservation(reservation, _now));
@@ -29,11 +29,11 @@ public class WeeklyParkingSpotTests
     [Theory]
     [InlineData("2026-01-01")]
     [InlineData("2026-01-02")]
-    public void AddReservation_WithValidDate_AddsReservation(string dateString)
+    public void AddVehicleReservation_WithValidDate_AddsReservation(string dateString)
     {
         // Arrange
         var validDate = DateTime.Parse(dateString);
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
             "XYZ123", new Date(validDate));
         
         // Act
@@ -45,13 +45,13 @@ public class WeeklyParkingSpotTests
     }
     
     [Fact]
-    public void AddReservation_AlreadyReservedForDate_ThrowsException()
+    public void AddVehicleReservation_AlreadyReservedForDate_ThrowsException()
     {
         // Arrange
-        var reservation1 = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
+        var reservation1 = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
             "XYZ123", new Date(_now));
         
-        var reservation2 = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "Jack Black",
+        var reservation2 = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "Jack Black",
             "XYZ321", new Date(_now));
         _weeklyParkingSpot.AddReservation(reservation1, _now);
 
@@ -64,10 +64,10 @@ public class WeeklyParkingSpotTests
     }
     
     [Fact]
-    public void RemoveReservation_ExistingReservation_RemovesIt()
+    public void RemoveReservation_ExistingVehicleReservation_RemovesIt()
     {
         // Arrange
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, "John Doe",
             "XYZ123", _now);
         _weeklyParkingSpot.AddReservation(reservation, _now);
         
