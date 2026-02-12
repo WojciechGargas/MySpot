@@ -30,9 +30,12 @@ internal class InMemoryWeeklyParkingSpotRepository : IWeeklyParkingSpotRepositor
         => Task.FromResult(_weeklyParkingSpots.AsEnumerable());
 
     public Task<IEnumerable<WeeklyParkingSpot>> GetByWeekAsync(Week week)
-        => Task.FromResult(_weeklyParkingSpots
-            .Where(x => x.Week.From == week.From && x.Week.To == week.To)
+    {
+        var targetToDate = week.To.Value.Date;
+        return Task.FromResult(_weeklyParkingSpots
+            .Where(x => x.Week.To.Value.Date == targetToDate)
             .AsEnumerable());
+    }
 
     public Task AddAsync(WeeklyParkingSpot weeklyParkingSpot)
     {

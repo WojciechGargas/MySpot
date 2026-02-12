@@ -19,14 +19,14 @@ GET {{url}}/reservations
 GET {{url}}/reservations/{{reservationId}}
 
 ###
-POST {{url}}/reservations/
+POST {{url}}/reservations/vehicle
 Content-Type: application/json
 
 {
   "ParkingSpotId": "{{parkingSpotId}}",
   "EmployeeName": "John Doe",
   "LicensePlate": "XYZ123",
-  "Date": "2026-02-10"
+  "Date": "2026-02-13"
 }
 
 ###
