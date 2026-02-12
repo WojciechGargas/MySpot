@@ -75,13 +75,10 @@ public class ReservationsService : IReservationsService
         
         _parkingReservationService.ReserveParkingForCleaning(weeklyParkingSpots, new Date(command.Date));
 
-        var task = weeklyParkingSpots.Select(x => _weeklyParkingSpotsRepository.UpdateAsync(x));
-        await Task.WhenAll(task);
-
-        // foreach (var parkingSpot in weeklyParkingSpots)
-        // {
-        //     await _weeklyParkingSpotsRepository.UpdateAsync(parkingSpot);
-        // }
+        foreach (var parkingSpot in weeklyParkingSpots)
+        {
+            await _weeklyParkingSpotsRepository.UpdateAsync(parkingSpot);
+        }
     }
 
     public async Task<bool> ChangeReservationLicensePlateAsync(ChangeReservationLicensePlate command)

@@ -129,6 +129,25 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task PostCleaning_ReturnsOk_AndCreatesCleaningReservations()
+    {
+        var command = new ReserveParkingSpotForCleaning(_clock.Current());
+
+        var response = await _backend.PostAsJsonAsync("reservations/cleaning", command);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var reservationsResponse = await _backend.GetAsync("reservations");
+        reservationsResponse.EnsureSuccessStatusCode();
+        var reservations = await reservationsResponse.Content.ReadFromJsonAsync<List<ReservationDto>>();
+
+        Assert.NotNull(reservations);
+        Assert.Equal(5, reservations!.Count);
+        Assert.All(reservations, r => Assert.True(string.IsNullOrWhiteSpace(r.EmployeeName)));
+        Assert.All(reservations, r => Assert.Equal(_clock.Current().Date, r.Date));
+    }
+
     private async Task<Guid> CreateReservationAsync(Guid parkingSpotId, DateTime date)
     {
         var command = new ReserveParkingSpotForVehicle(
