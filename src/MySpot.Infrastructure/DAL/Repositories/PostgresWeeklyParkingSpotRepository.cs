@@ -21,12 +21,10 @@ internal sealed class PostgresWeeklyParkingSpotRepository : IWeeklyParkingSpotRe
 
     public async Task<IEnumerable<WeeklyParkingSpot>> GetByWeekAsync(Week week)
     {
-        var weeklyParkingSpots = await _dbContext.WeeklyParkingSpots
-            .Include(x => x.Reservations)
+        return await _dbContext.WeeklyParkingSpots
+            .Include(spot => spot.Reservations)
+            .Where(x => x.Week == week)
             .ToListAsync();
-
-        var targetToDate = week.To.Value.Date;
-        return weeklyParkingSpots.Where(x => x.Week.To.Value.Date == targetToDate);
     }
 
 
