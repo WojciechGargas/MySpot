@@ -72,8 +72,19 @@ public class ReservationsService : IReservationsService
     {
         var week = new Week(command.Date);
         var weeklyParkingSpots = (await _weeklyParkingSpotsRepository.GetByWeekAsync(week)).ToList();
+        var date = new Date(command.Date);
+        var vehicleReservationsToDelete = weeklyParkingSpots
+            .SelectMany(x => x.Reservations)
+            .OfType<VehicleReservation>()
+            .Where(x => x.Date == date)
+            .ToList();
         
-        _parkingReservationService.ReserveParkingForCleaning(weeklyParkingSpots, new Date(command.Date));
+        _parkingReservationService.ReserveParkingForCleaning(weeklyParkingSpots, date);
+
+        if (vehicleReservationsToDelete.Count > 0)
+        {
+            await _reservationsRepository.DeleteRangeAsync(vehicleReservationsToDelete);
+        }
 
         foreach (var parkingSpot in weeklyParkingSpots)
         {

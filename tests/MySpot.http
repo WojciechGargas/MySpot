@@ -26,7 +26,15 @@ Content-Type: application/json
   "ParkingSpotId": "{{parkingSpotId}}",
   "EmployeeName": "John Doe",
   "LicensePlate": "XYZ123",
-  "Date": "2026-02-13"
+  "Date": "2026-02-15"
+}
+
+###
+POST {{url}}/reservations/cleaning
+Content-Type: application/json
+
+{
+  "Date": "2026-02-15"
 }
 
 ###

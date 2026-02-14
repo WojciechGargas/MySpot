@@ -92,7 +92,14 @@ public class ReservationServiceTests
         {
             _reservations.Remove(reservation);
             return Task.CompletedTask;
+        }
+
+        public Task DeleteRangeAsync(IEnumerable<Reservation> reservations)
+        {
+            var idsToRemove = reservations.Select(r => r.Id).ToHashSet();
+            _reservations.RemoveAll(r => idsToRemove.Contains(r.Id));
+            return Task.CompletedTask;
+        }
     }
-}
 
 }

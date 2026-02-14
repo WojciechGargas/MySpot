@@ -48,4 +48,10 @@ internal sealed class ReservationRepository : IReservationsRepository
         _dbContext.Reservations.Remove(reservation);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteRangeAsync(IEnumerable<Reservation> reservations)
+    {
+        _dbContext.Reservations.RemoveRange(reservations);
+        await _dbContext.SaveChangesAsync();
+    }
 }
