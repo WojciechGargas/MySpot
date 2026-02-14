@@ -1,0 +1,58 @@
+@url = http://localhost:5223
+@parkingSpotId = 00000000-0000-0000-0000-000000000001
+
+###
+GET {{url}}
+
+###
+GET {{url}}/reservations
+
+> {%
+    const reservations = Array.isArray(response.body) ? response.body : [];
+    const baseUrl = (request.environment && request.environment.get("url")) || "{{url}}";
+    client.global.set("baseUrl", baseUrl);
+    client.global.set("reservationIds", reservations.map(r => r.id));
+    if (reservations.length > 0) {
+        client.global.set("reservationId", reservations[0].id);
+    } else {
+        client.global.clear("reservationId");
+    }
+%}
+
+###
+GET {{url}}/reservations/{{reservationId}}
+
+###
+POST {{url}}/reservations/vehicle
+Content-Type: application/json
+
+{
+  "ParkingSpotId": "{{parkingSpotId}}",
+  "EmployeeName": "John Doe",
+  "LicensePlate": "XYZ123",
+  "Date": "2026-02-15"
+}
+
+###
+POST {{url}}/reservations/cleaning
+Content-Type: application/json
+
+{
+  "Date": "2026-02-15"
+}
+
+###
+PUT {{url}}/reservations/{{reservationId}}
+Content-Type: application/json
+
+{
+  "LicensePlate": "XYZ124"
+}
+
+###
+DELETE {{url}}/reservations
+Content-Type: application/json
+
+{
+  "reservationId": "{{reservationId}}"
+}

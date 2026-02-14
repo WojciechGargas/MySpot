@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using MySpot.Application.Commands;
 using MySpot.Application.DTO;
 using MySpot.Application.Services;
@@ -59,12 +59,12 @@ public class ReservationsController : ControllerBase
         return NotFound();
     }
 
-    [HttpDelete("{id:Guid}")]
-    public async Task<ActionResult> Delete(Guid id)
+    [HttpDelete]
+    public async Task<ActionResult> Delete(DeleteReservation command)
     {
-        if(await _reservationsService.DeleteAsync(new DeleteReservation(id)))
+        if(await _reservationsService.DeleteAsync(new DeleteReservation(command.ReservationId)))
             return NoContent();
 
-        return NotFound();
+        return NotFound(command.ReservationId);
     }
 }
