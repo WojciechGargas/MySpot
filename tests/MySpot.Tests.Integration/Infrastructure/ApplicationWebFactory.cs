@@ -80,11 +80,11 @@ public sealed class ApplicationWebFactory : WebApplicationFactory<Program>, IAsy
         var week = new Week(new DateTimeOffset(Clock.CurrentTime));
         var weeklyParkingSpots = new List<WeeklyParkingSpot>
         {
-            new(Guid.Parse("00000000-0000-0000-0000-000000000001"), week, name: "P1"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000002"), week, name: "P2"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000003"), week, name: "P3"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000004"), week, name: "P4"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000005"), week, name: "P5"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000001"), week, name: "P1"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000002"), week, name: "P2"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000003"), week, name: "P3"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000004"), week, name: "P4"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000005"), week, name: "P5"),
         };
 
         await dbContext.WeeklyParkingSpots.AddRangeAsync(weeklyParkingSpots);

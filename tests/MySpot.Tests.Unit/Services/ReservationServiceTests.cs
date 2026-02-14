@@ -23,6 +23,7 @@ public class ReservationServiceTests
         var command = new ReserveParkingSpotForVehicle(
             weeklyParkingSpot.Id,
             Guid.NewGuid(),
+            ParkingSpotCapacityValue.Full,
             _clock.Current().AddMinutes(5),
             "John Doe",
             "XYZ123"

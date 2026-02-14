@@ -1,4 +1,7 @@
-﻿namespace MySpot.Application.Commands;
+﻿using MySpot.Core.ValueObjects;
 
-public record ReserveParkingSpotForVehicle(Guid ParkingSpotId, Guid ReservationId, DateTime Date,
+namespace MySpot.Application.Commands;
+
+public record ReserveParkingSpotForVehicle(Guid ParkingSpotId, Guid ReservationId, ParkingSpotCapacityValue  Capacity, 
+    DateTime Date,
     string EmployeeName, string LicensePlate);

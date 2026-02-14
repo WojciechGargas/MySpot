@@ -23,11 +23,11 @@ internal sealed class DataBaseInitializer(IServiceProvider serviceProvider) : IH
         var clock = scope.ServiceProvider.GetRequiredService<IClock>();
         var weeklyParkingSpots = new List<WeeklyParkingSpot>()
         {
-            new(Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(clock.Current()), name: "P1"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(clock.Current()), name: "P2"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(clock.Current()), name: "P3"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(clock.Current()), name: "P4"),
-            new(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(clock.Current()), name: "P5"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(clock.Current()), name: "P1"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(clock.Current()), name: "P2"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(clock.Current()), name: "P3"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(clock.Current()), name: "P4"),
+            WeeklyParkingSpot.Create(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(clock.Current()), name: "P5"),
         };
 
         dbContext.WeeklyParkingSpots.AddRange(weeklyParkingSpots);

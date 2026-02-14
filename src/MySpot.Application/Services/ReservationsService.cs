@@ -58,7 +58,7 @@ public class ReservationsService : IReservationsService
             return null;
         
         var reservation = new VehicleReservation(command.ReservationId, command.ParkingSpotId, command.EmployeeName,
-        command.LicensePlate, new Date(command.Date));
+        command.LicensePlate, new Date(command.Date),  command.Capacity);
         
         _parkingReservationService.ReserveSpotForVehicle(weeklyParkingSpots, JobTitle.Employee,
             parkingSpotToReserve, reservation);

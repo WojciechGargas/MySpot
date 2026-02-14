@@ -16,6 +16,8 @@ internal sealed class ReservationConfiguration : IEntityTypeConfiguration<Reserv
             .HasConversion(x => x.Value, x => new ParkingSpotId(x));
         builder.Property(x => x.Date)
             .HasConversion(x => x.Value, x => new Date(x));
+        builder.Property(x => x.Capacity)
+            .HasConversion(x => x.Value, x => new ParkingSpotCapacity(x));
 
         builder
             .HasDiscriminator<string>("Type")

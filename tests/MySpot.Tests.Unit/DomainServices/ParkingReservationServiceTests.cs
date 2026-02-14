@@ -17,13 +17,13 @@ public class ParkingReservationServiceTests
         var date = new Date(_clock.Current());
         var weeklyParkingSpots = new List<WeeklyParkingSpot>
         {
-            new(Guid.NewGuid(), new Week(date), "P1"),
-            new(Guid.NewGuid(), new Week(date), "P2"),
+            WeeklyParkingSpot.Create(Guid.NewGuid(), new Week(date), "P1"),
+            WeeklyParkingSpot.Create(Guid.NewGuid(), new Week(date), "P2"),
         };
 
         foreach (var spot in weeklyParkingSpots)
         {
-            var vehicleReservation = new VehicleReservation(ReservationId.Create(), spot.Id, "John Doe", "XYZ123", date);
+            var vehicleReservation = new VehicleReservation(ReservationId.Create(), spot.Id, "John Doe", "XYZ123", date, ParkingSpotCapacityValue.Full);
             spot.AddReservation(vehicleReservation, date);
         }
 
