@@ -178,5 +178,17 @@ public class ReservationsControllerTests : IClassFixture<ApplicationWebFactory>,
     }
 
     private Task<HttpResponseMessage> DeleteReservationAsync(Guid reservationId)
-        => _backend.DeleteAsync($"reservations/{reservationId}");
+    {
+        var command = new DeleteReservation(reservationId);
+
+        var request = new HttpRequestMessage(
+            HttpMethod.Delete,
+            "reservations")
+        {
+            Content = JsonContent.Create(command)
+        };
+
+        return _backend.SendAsync(request);
+    }
+
 }
