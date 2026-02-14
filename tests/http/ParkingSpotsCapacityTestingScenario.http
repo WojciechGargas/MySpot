@@ -1,0 +1,80 @@
+@url = http://localhost:5223
+@parkingSpotId = 00000000-0000-0000-0000-000000000001
+@date = 2026-02-15
+
+# Scenario: parking spot capacity flow
+# Capacity values:
+# - 1 = OneQuarter
+# - 2 = Half
+# - 3 = ThreeQuarter
+# - 4 = Full
+
+### Step 1: List current reservations
+GET {{url}}/reservations
+
+> {%
+    const reservations = Array.isArray(response.body) ? response.body : [];
+    if (reservations.length > 0) {
+        client.global.set("reservationId", reservations[0].id);
+    } else {
+        client.global.clear("reservationId");
+    }
+%}
+
+### Step 2: Reserve Half capacity (should succeed)
+POST {{url}}/reservations/vehicle
+Content-Type: application/json
+
+{
+  "ParkingSpotId": "{{parkingSpotId}}",
+  "ReservationId": "00000000-0000-0000-0000-000000000010",
+  "Capacity": 2,
+  "EmployeeName": "John Doe",
+  "LicensePlate": "XYZ123",
+  "Date": "{{date}}"
+}
+
+### Step 3: Reserve another Half capacity (should succeed)
+POST {{url}}/reservations/vehicle
+Content-Type: application/json
+
+{
+  "ParkingSpotId": "{{parkingSpotId}}",
+  "ReservationId": "00000000-0000-0000-0000-000000000011",
+  "Capacity": 2,
+  "EmployeeName": "Jane Doe",
+  "LicensePlate": "XYZ124",
+  "Date": "{{date}}"
+}
+
+### Step 4: Reserve OneQuarter capacity (should fail with capacity exceeded)
+POST {{url}}/reservations/vehicle
+Content-Type: application/json
+
+{
+  "ParkingSpotId": "{{parkingSpotId}}",
+  "ReservationId": "00000000-0000-0000-0000-000000000012",
+  "Capacity": 1,
+  "EmployeeName": "Jack Black",
+  "LicensePlate": "XYZ125",
+  "Date": "{{date}}"
+}
+
+### Step 5: Cleaning reservation for the same date (should replace vehicle reservations)
+POST {{url}}/reservations/cleaning
+Content-Type: application/json
+
+{
+  "Date": "{{date}}"
+}
+
+### Step 6: List reservations again
+GET {{url}}/reservations
+
+### Step 7: Delete the first reservation from the latest list (manual cleanup)
+DELETE {{url}}/reservations
+Content-Type: application/json
+
+{
+  "reservationId": "{{reservationId}}"
+}
