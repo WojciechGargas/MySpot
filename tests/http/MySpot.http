@@ -1,14 +1,16 @@
 @url = http://localhost:5223
 @parkingSpotId = 00000000-0000-0000-0000-000000000001
+@date = 2026-02-15
 
 ###
 GET {{url}}
 
 ###
-GET {{url}}/reservations
+GET {{url}}/parking-spots
 
 > {%
-    const reservations = Array.isArray(response.body) ? response.body : [];
+    const spots = Array.isArray(response.body) ? response.body : [];
+    const reservations = spots.flatMap(s => Array.isArray(s.reservations) ? s.reservations : []);
     const baseUrl = (request.environment && request.environment.get("url")) || "{{url}}";
     client.global.set("baseUrl", baseUrl);
     client.global.set("reservationIds", reservations.map(r => r.id));
@@ -20,29 +22,28 @@ GET {{url}}/reservations
 %}
 
 ###
-GET {{url}}/reservations/{{reservationId}}
-
-###
-POST {{url}}/reservations/vehicle
+POST {{url}}/parking-spots/{{parkingSpotId}}/reservations/vehicle
 Content-Type: application/json
 
 {
   "ParkingSpotId": "{{parkingSpotId}}",
+  "ReservationId": "00000000-0000-0000-0000-000000000010",
+  "Capacity": 4,
   "EmployeeName": "John Doe",
   "LicensePlate": "XYZ123",
-  "Date": "2026-02-15"
+  "Date": "{{date}}"
 }
 
 ###
-POST {{url}}/reservations/cleaning
+POST {{url}}/parking-spots/reservations/cleaning
 Content-Type: application/json
 
 {
-  "Date": "2026-02-15"
+  "Date": "{{date}}"
 }
 
 ###
-PUT {{url}}/reservations/{{reservationId}}
+PUT {{url}}/parking-spots/reservations/{{reservationId}}
 Content-Type: application/json
 
 {
@@ -50,9 +51,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/reservations
-Content-Type: application/json
-
-{
-  "reservationId": "{{reservationId}}"
-}
+DELETE {{url}}/parking-spots/reservations/{{reservationId}}

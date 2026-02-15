@@ -1,5 +1,5 @@
 using MySpot.Application.Commands;
-using MySpot.Application.Services;
+using MySpot.Application.Commands.Handlers;
 using MySpot.Core.Abstractions;
 using MySpot.Core.DamainServices;
 using MySpot.Core.Entities;
@@ -15,26 +15,32 @@ namespace MySpot.Tests.Unit.Services;
 public class ReservationServiceTests
 {
     [Fact]
-    public async Task Create_WithCorrectDate_ShouldSucceed()
+    public async Task ReserveVehicle_WithCorrectDate_ShouldSucceed()
     {
         // Arrange
         var weeklyParkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First();
+        var reservationId = Guid.NewGuid();
+        var employeeName = "John Doe";
 
         var command = new ReserveParkingSpotForVehicle(
             weeklyParkingSpot.Id,
-            Guid.NewGuid(),
+            reservationId,
             ParkingSpotCapacityValue.Full,
             _clock.Current().AddMinutes(5),
-            "John Doe",
+            employeeName,
             "XYZ123"
         );
 
         // Act
-        var reservationId = await _reservationService.ReserveForVehicleAsync(command);
+        await _reserveParkingSpotForVehicleHandler.HandleAsync(command);
 
         // Assert
-        reservationId.ShouldNotBeNull();
-        reservationId.ShouldBe(command.ReservationId);
+        var refreshedParkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync())
+            .Single(x => x.Id == weeklyParkingSpot.Id);
+        var reservation = refreshedParkingSpot.Reservations.Single();
+        reservation.Id.Value.ShouldBe(reservationId);
+        reservation.ShouldBeOfType<VehicleReservation>();
+        ((VehicleReservation)reservation).EmployeeName.Value.ShouldBe(employeeName);
     }
 
     #region Arrange
@@ -42,8 +48,8 @@ public class ReservationServiceTests
     private readonly IClock _clock = new TestClock();
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;
     private readonly IReservationsRepository _reservationsRepository = new InMemoryReservationsRepository();
-    private readonly IReservationsService _reservationService;
     private readonly IParkingReservationService _parkingReservationService;
+    private readonly ReserveParkingSpotForVehicleHandler _reserveParkingSpotForVehicleHandler;
 
     public ReservationServiceTests()
     {
@@ -55,7 +61,10 @@ public class ReservationServiceTests
             new BossReservationPolicy(),
         };
         _parkingReservationService = new ParkingReservationService(policies, _clock);
-        _reservationService = new ReservationsService(_clock, _weeklyParkingSpotRepository, _reservationsRepository,
+        _reserveParkingSpotForVehicleHandler = new ReserveParkingSpotForVehicleHandler(
+            _clock,
+            _weeklyParkingSpotRepository,
+            _reservationsRepository,
             _parkingReservationService);
     }
     #endregion

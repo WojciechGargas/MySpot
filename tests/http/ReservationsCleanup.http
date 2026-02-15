@@ -6,10 +6,11 @@
 @url = http://localhost:5223
 
 ### Step 1: List reservations and capture ids
-GET {{url}}/reservations
+GET {{url}}/parking-spots
 
 > {%
-    const reservations = Array.isArray(response.body) ? response.body : [];
+    const spots = Array.isArray(response.body) ? response.body : [];
+    const reservations = spots.flatMap(s => Array.isArray(s.reservations) ? s.reservations : []);
     if (reservations.length > 0) {
         client.global.set("firstReservationId", reservations[0].id);
     } else {
@@ -23,18 +24,8 @@ GET {{url}}/reservations
 
 ### Step 2 (manual): Delete the first reservation
 # Run this step repeatedly to clear the database by hand.
-DELETE {{url}}/reservations
-Content-Type: application/json
-
-{
-  "reservationId": "{{firstReservationId}}"
-}
+DELETE {{url}}/parking-spots/reservations/{{firstReservationId}}
 
 ### Step 3 (auto): Delete all reservations from the latest list
 # Run Step 1 first (or Run All). The HTTP client will iterate over {{reservationIds}}.
-DELETE {{url}}/reservations
-Content-Type: application/json
-
-{
-  "reservationId": "{{reservationIds}}"
-}
+DELETE {{url}}/parking-spots/reservations/{{reservationIds}}
