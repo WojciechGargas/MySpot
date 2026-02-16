@@ -1,6 +1,8 @@
 using MySpot.Application;
 using MySpot.Core;
 using MySpot.Infrastructure;
+using MySpot.Infrastructure.DAL.Logging.Decorators;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
     .AddControllers();
+
+builder.UseSerilog();
 
 var app = builder.Build();
 

@@ -8,6 +8,7 @@ using MySpot.Core.Abstractions;
 using MySpot.Core.Repositories;
 using MySpot.Infrastructure.DAL;
 using MySpot.Infrastructure.DAL.Handlers;
+using MySpot.Infrastructure.DAL.Logging.Decorators;
 using MySpot.Infrastructure.DAL.Repositories;
 using MySpot.Infrastructure.Exceptions;
 using MySpot.Infrastructure.Time;
@@ -20,12 +21,13 @@ public static class Extensions
     {
         var section = configuration.GetSection("app");
         services.Configure<AppOptions>(section);
-
         services.AddSingleton<ExceptionMiddleware>();
         
         services
             .AddPostgres(configuration)
             .AddSingleton<IClock, Clock>();
+
+        services.AddCustomLogging();
 
         services.AddScoped<IQueryHandler<GetWeeklyParkingSpots, IEnumerable<WeeklyParkingSpotDto>>, GetWeeklyParkingSpotsHandler>();
         

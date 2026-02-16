@@ -1,6 +1,6 @@
 @url = http://localhost:5223
 @parkingSpotId = 00000000-0000-0000-0000-000000000001
-@date = 2026-02-15
+@date = 2026-02-18
 
 ###
 GET {{url}}
