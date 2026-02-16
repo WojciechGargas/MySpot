@@ -26,6 +26,7 @@ public class ReserveParkingSpotForCleaningHandler : ICommandHandler<ReserveParki
         var week = new Week(command.Date);
         var weeklyParkingSpots = (await _repository.GetByWeekAsync(week)).ToList();
         var date = new Date(command.Date);
+        
         var vehicleReservationsToDelete = weeklyParkingSpots
             .SelectMany(x => x.Reservations)
             .OfType<VehicleReservation>()
@@ -39,9 +40,7 @@ public class ReserveParkingSpotForCleaningHandler : ICommandHandler<ReserveParki
             await _reservationsRepository.DeleteRangeAsync(vehicleReservationsToDelete);
         }
 
-        foreach (var parkingSpot in weeklyParkingSpots)
-        {
-            await _repository.UpdateAsync(parkingSpot);
-        }
+        var tasks = weeklyParkingSpots.Select(x => _repository.UpdateAsync(x));
+        await Task.WhenAll(tasks);
     }
 }

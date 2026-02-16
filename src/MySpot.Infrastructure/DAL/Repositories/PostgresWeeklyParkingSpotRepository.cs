@@ -37,21 +37,21 @@ internal sealed class PostgresWeeklyParkingSpotRepository : IWeeklyParkingSpotRe
         return result.AsEnumerable();
     }
 
-    public async Task AddAsync(WeeklyParkingSpot weeklyParkingSpot)
+    public Task AddAsync(WeeklyParkingSpot weeklyParkingSpot)
     {
-        await _dbContext.WeeklyParkingSpots.AddAsync(weeklyParkingSpot);
-        await _dbContext.SaveChangesAsync();
+         _dbContext.WeeklyParkingSpots.AddAsync(weeklyParkingSpot);
+         return Task.CompletedTask;
     }
 
-    public async Task UpdateAsync(WeeklyParkingSpot weeklyParkingSpot)
+    public Task UpdateAsync(WeeklyParkingSpot weeklyParkingSpot)
     { 
         _dbContext.WeeklyParkingSpots.Update(weeklyParkingSpot);
-        await _dbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(WeeklyParkingSpot weeklyParkingSpot)
+    public Task DeleteAsync(WeeklyParkingSpot weeklyParkingSpot)
     {
         _dbContext.WeeklyParkingSpots.Remove(weeklyParkingSpot);
-        await _dbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 }
