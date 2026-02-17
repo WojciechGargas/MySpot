@@ -3,5 +3,5 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands;
 
-public record ReserveParkingSpotForVehicle(Guid ParkingSpotId, Guid ReservationId, ParkingSpotCapacityValue  Capacity, 
-    DateTime Date, string EmployeeName, string LicensePlate) : ICommand;
+public sealed record ReserveParkingSpotForVehicle(Guid ParkingSpotId, Guid ReservationId, Guid UserId, ParkingSpotCapacityValue  Capacity, 
+    DateTime Date, string LicensePlate) : ICommand;
