@@ -11,6 +11,7 @@ using MySpot.Infrastructure.DAL.Handlers;
 using MySpot.Infrastructure.DAL.Logging.Decorators;
 using MySpot.Infrastructure.DAL.Repositories;
 using MySpot.Infrastructure.Exceptions;
+using MySpot.Infrastructure.Security;
 using MySpot.Infrastructure.Time;
 
 namespace MySpot.Infrastructure;
@@ -22,6 +23,7 @@ public static class Extensions
         var section = configuration.GetSection("app");
         services.Configure<AppOptions>(section);
         services.AddSingleton<ExceptionMiddleware>();
+        services.AddSecurity();
         
         services
             .AddPostgres(configuration)

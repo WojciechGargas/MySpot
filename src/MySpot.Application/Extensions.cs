@@ -13,6 +13,7 @@ public static class Extensions
         services.AddScoped<ICommandHandler<ReserveParkingSpotForCleaning>, ReserveParkingSpotForCleaningHandler>();
         services.AddScoped<ICommandHandler<ChangeReservationLicensePlate>, ChangeReservationLicensePlateHandler>();
         services.AddScoped<ICommandHandler<DeleteReservation>, DeleteReservationHandler>();
+        services.AddScoped<ICommandHandler<SignUp>, SignUpHandler>();
 
         return services;
     }
