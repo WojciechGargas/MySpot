@@ -8,7 +8,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands.Handlers;
 
-public sealed class ReserveParkingSpotForVehicleHandler :ICommandHandler<ReserveParkingSpotForVehicle>
+internal sealed class ReserveParkingSpotForVehicleHandler :ICommandHandler<ReserveParkingSpotForVehicle>
 {
     private readonly IClock _clock;
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;

@@ -7,7 +7,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands.Handlers;
 
-public sealed class DeleteReservationHandler : ICommandHandler<DeleteReservation>
+internal sealed class DeleteReservationHandler : ICommandHandler<DeleteReservation>
 {
     private readonly IWeeklyParkingSpotRepository _repository;
     private readonly IReservationsRepository _reservationsRepository;

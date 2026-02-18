@@ -8,7 +8,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands.Handlers;
 
-public class ChangeReservationLicensePlateHandler : ICommandHandler<ChangeReservationLicensePlate>
+internal sealed class ChangeReservationLicensePlateHandler : ICommandHandler<ChangeReservationLicensePlate>
 {
     private readonly IWeeklyParkingSpotRepository _repository;
 

@@ -8,7 +8,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands.Handlers;
 
-public class SignUpHandler : ICommandHandler<SignUp>
+internal sealed class SignUpHandler : ICommandHandler<SignUp>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordManager _passwordManager;

@@ -7,7 +7,7 @@ using MySpot.Core.ValueObjects;
 
 namespace MySpot.Application.Commands.Handlers;
 
-public class ReserveParkingSpotForCleaningHandler : ICommandHandler<ReserveParkingSpotForCleaning>
+internal sealed class ReserveParkingSpotForCleaningHandler : ICommandHandler<ReserveParkingSpotForCleaning>
 {
     private readonly IWeeklyParkingSpotRepository _repository;
     private readonly IParkingReservationService _reservationService;
