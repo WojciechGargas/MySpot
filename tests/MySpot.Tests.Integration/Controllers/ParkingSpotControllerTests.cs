@@ -77,12 +77,12 @@ public class ParkingSpotControllerTests : IClassFixture<ApplicationWebFactory>, 
     [Fact]
     public async Task PostVehicle_ReturnsBadRequest_ForUnknownParkingSpot()
     {
-        var userId = await CreateUserAsync("Employee User");
+        var user = await UsersApiHelper.SignUpAsync(_backend, "Employee User");
 
         var command = new ReserveParkingSpotForVehicle(
             Guid.NewGuid(),
             Guid.Empty,
-            userId,
+            user.Id,
             ParkingSpotCapacityValue.Full,
             _clock.Current(),
             "ABC123");
@@ -156,12 +156,12 @@ public class ParkingSpotControllerTests : IClassFixture<ApplicationWebFactory>, 
 
     private async Task<Guid> CreateReservationAsync(Guid parkingSpotId, DateTime date, string employeeName, string licensePlate)
     {
-        var userId = await CreateUserAsync(employeeName);
+        var user = await UsersApiHelper.SignUpAsync(_backend, employeeName);
 
         var command = new ReserveParkingSpotForVehicle(
             parkingSpotId,
             Guid.Empty,
-            userId,
+            user.Id,
             ParkingSpotCapacityValue.Full,
             date,
             licensePlate);
@@ -179,31 +179,6 @@ public class ParkingSpotControllerTests : IClassFixture<ApplicationWebFactory>, 
             r.EmployeeName == employeeName &&
             r.Date == date.Date);
         return reservation.Id;
-    }
-
-    private async Task<Guid> CreateUserAsync(string fullName)
-    {
-        var suffix = Guid.NewGuid().ToString("N")[..8];
-        var username = $"user_{suffix}";
-        var command = new SignUp(
-            Guid.Empty,
-            $"{username}@example.com",
-            username,
-            "secret123",
-            fullName,
-            "user");
-
-        var signUpResponse = await _backend.PostAsJsonAsync("users", command);
-        if (signUpResponse.StatusCode != HttpStatusCode.NoContent)
-        {
-            var body = await signUpResponse.Content.ReadAsStringAsync();
-            Assert.Fail($"Expected NoContent from sign-up but got {signUpResponse.StatusCode}. Body: {body}");
-        }
-
-        var users = await _backend.GetFromJsonAsync<List<UserDto>>("users");
-        var user = users?.SingleOrDefault(x => x.Username == username);
-        Assert.NotNull(user);
-        return user!.Id;
     }
 
     private Task<HttpResponseMessage> UpdateLicensePlateAsync(Guid reservationId, string licensePlate)
