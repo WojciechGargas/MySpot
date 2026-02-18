@@ -20,14 +20,23 @@ public class ReservationServiceTests
         // Arrange
         var weeklyParkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First();
         var reservationId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var employeeName = "John Doe";
+        await _userRepository.AddAsync(new User(
+            userId,
+            "john.doe@example.com",
+            "john-doe",
+            "secret123",
+            employeeName,
+            "user",
+            _clock.Current()));
 
         var command = new ReserveParkingSpotForVehicle(
             weeklyParkingSpot.Id,
             reservationId,
+            userId,
             ParkingSpotCapacityValue.Full,
             _clock.Current().AddMinutes(5),
-            employeeName,
             "XYZ123"
         );
 
@@ -48,6 +57,7 @@ public class ReservationServiceTests
     private readonly IClock _clock = new TestClock();
     private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;
     private readonly IReservationsRepository _reservationsRepository = new InMemoryReservationsRepository();
+    private readonly IUserRepository _userRepository = new InMemoryUsersRepository();
     private readonly IParkingReservationService _parkingReservationService;
     private readonly ReserveParkingSpotForVehicleHandler _reserveParkingSpotForVehicleHandler;
 
@@ -65,7 +75,8 @@ public class ReservationServiceTests
             _clock,
             _weeklyParkingSpotRepository,
             _reservationsRepository,
-            _parkingReservationService);
+            _parkingReservationService,
+            _userRepository);
     }
     #endregion
 
@@ -108,6 +119,26 @@ public class ReservationServiceTests
         {
             var idsToRemove = reservations.Select(r => r.Id).ToHashSet();
             _reservations.RemoveAll(r => idsToRemove.Contains(r.Id));
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class InMemoryUsersRepository : IUserRepository
+    {
+        private readonly List<User> _users = new();
+
+        public Task<User?> GetByIdAsync(UserId id)
+            => Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
+
+        public Task<User?> GetByEmailAsync(Email email)
+            => Task.FromResult(_users.SingleOrDefault(x => x.Email == email));
+
+        public Task<User?> GetByUsernameAsync(Username username)
+            => Task.FromResult(_users.SingleOrDefault(x => x.Username == username));
+
+        public Task AddAsync(User user)
+        {
+            _users.Add(user);
             return Task.CompletedTask;
         }
     }
