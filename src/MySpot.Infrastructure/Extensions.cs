@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using MySpot.Application.Abstractions;
 using MySpot.Application.DTO;
 using MySpot.Application.Queries;
@@ -23,8 +24,9 @@ public static class Extensions
     {
         var section = configuration.GetSection("app");
         
-        var infrastructureAssembly = typeof(AppOptions).Assembly;
         
+        var infrastructureAssembly = typeof(AppOptions).Assembly;
+
         services.Configure<AppOptions>(section)
             .AddSingleton<ExceptionMiddleware>()
             .AddSecurity()
@@ -33,10 +35,20 @@ public static class Extensions
             .AddPostgres(configuration)
             .AddSingleton<IClock, Clock>()
             .Scan(s => s.FromAssemblies(infrastructureAssembly)
-            .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
-            .AsImplementedInterfaces()
-            .WithScopedLifetime())
-            .AddHttpContextAccessor();
+                .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithScopedLifetime())
+            .AddHttpContextAccessor()
+            .AddSwaggerGen(swagger =>
+            {
+                swagger.EnableAnnotations();
+                swagger.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MySpot API",
+                    Version = "v1",
+                });
+            })
+            .AddEndpointsApiExplorer();
 
 
         services.AddScoped<IQueryHandler<GetWeeklyParkingSpots, IEnumerable<WeeklyParkingSpotDto>>, GetWeeklyParkingSpotsHandler>();
@@ -47,6 +59,14 @@ public static class Extensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        // app.UseReDoc(reDoc =>
+        // {
+        //     reDoc.RoutePrefix = "docs";
+        //     reDoc.DocumentTitle = "MySpot API";
+        //     reDoc.SpecUrl("/swagger/v1/swagger.json");
+        // });
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
