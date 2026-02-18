@@ -7,7 +7,6 @@ namespace MySpot.Api.Controllers;
 [Route("")]
 public class HomeController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly string _name;
 
     public HomeController(IOptionsSnapshot<AppOptions> options)
