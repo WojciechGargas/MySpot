@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using MySpot.Application.Commands;
 using MySpot.Application.DTO;
@@ -20,7 +21,7 @@ public class UsersControllerTests : IClassFixture<ApplicationWebFactory>, IAsync
     public async Task InitializeAsync()
     {
         _clock = _factory.Clock;
-        _clock.CurrentTime = new DateTime(2022, 8, 10, 5, 0, 0, DateTimeKind.Utc);
+        _clock.CurrentTime = DateTime.UtcNow;
         await _factory.InitializeAsync();
         _backend = _factory.CreateClient();
     }
@@ -34,9 +35,13 @@ public class UsersControllerTests : IClassFixture<ApplicationWebFactory>, IAsync
     [Fact]
     public async Task Post_CreatesUser_AndGetByIdReturnsIt()
     {
+        var admin = await UsersApiHelper.SignUpAsync(_backend, "Admin User", role: "admin");
         var created = await UsersApiHelper.SignUpAsync(_backend, "Jane Doe");
 
-        var response = await _backend.GetAsync($"users/{created.Id}");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"users/{created.Id}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", admin.AccessToken);
+
+        var response = await _backend.SendAsync(request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var user = await response.Content.ReadFromJsonAsync<UserDto>();

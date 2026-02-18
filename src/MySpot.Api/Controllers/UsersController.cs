@@ -35,8 +35,15 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{UserId:guid}")]
+    [Authorize]
     public async Task<ActionResult<UserDto>> Get(Guid userId)
     {
+        
+        if(!HttpContext.User.IsInRole("admin"))
+        {
+            return Forbid();
+        }
+        
         var user = await _getUserHandler.HandleAsync(new GetUser{ UserId = userId });
         if (user is null)
         {
@@ -66,6 +73,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<UserDto>>> Get([FromQuery] GetUsers query)
         => Ok(await _getUsersHandler.HandleAsync(query));
     

@@ -25,7 +25,7 @@ public class ParkingSpotControllerTests : IClassFixture<ApplicationWebFactory>, 
     public async Task InitializeAsync()
     {
         _clock = _factory.Clock;
-        _clock.CurrentTime = new DateTime(2022, 8, 10, 5, 0, 0, DateTimeKind.Utc);
+        _clock.CurrentTime = DateTime.UtcNow;
         await _factory.InitializeAsync();
         _backend = _factory.CreateClient();
     }
